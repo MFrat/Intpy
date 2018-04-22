@@ -6,14 +6,14 @@ class Test:
     @deterministic
     def func(self, data):
         time.sleep(2)
-        return "func1 {0}".format(data)
+        return [data]
 
     @deterministic
     def func2(self):
-        return 'func2'
+        return 1234
 
 
 if __name__ == "__main__":
     test = Test()
-    print(test.func(123))
+    print(test.func("asdasd"))
     print(test.func2())

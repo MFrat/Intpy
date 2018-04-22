@@ -27,15 +27,15 @@ def _exec_stmt_return(stmt):
 
 
 def _save(file_name):
-    _exec_stmt("INSERT INTO CACHE(cache_file) VALUES ('{0}')".format(file_name))
+    _exec_stmt("INSERT INTO CACHE(cache_file) VALUES ('{0}')".format(file_name.replace("'", "").replace('"', "")))
 
 
 def _get(id):
-    return _exec_stmt_return("SELECT cache_file FROM CACHE WHERE cache_file = '{0}'".format(id))
+    return _exec_stmt_return("SELECT cache_file FROM CACHE WHERE cache_file = '{0}'".format(id.replace("'", "").replace('"', "")))
 
 
 def _format_args(args):
-    return str(args)
+    return str([str(x).replace('"', "").replace("'", "") for x in args])
 
 
 def _get_file_name(id):
