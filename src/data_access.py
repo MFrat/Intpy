@@ -31,7 +31,8 @@ def _save(file_name):
 
 
 def _get(id):
-    return _exec_stmt_return("SELECT cache_file FROM CACHE WHERE cache_file = '{0}'".format(id.replace("'", "").replace('"', "")))
+    return _exec_stmt_return("SELECT cache_file FROM CACHE WHERE cache_file = '{0}'".format(id.replace("'", "").
+                                                                                            replace('"', "")))
 
 
 def _format_args(args):

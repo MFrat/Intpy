@@ -13,7 +13,15 @@ class Test:
         return 1234
 
 
+@deterministic
+def load_data():
+    return "data"
+
+
 if __name__ == "__main__":
     test = Test()
-    print(test.func("asdasd"))
+    print(test.func({"key": 1}))
+    print(test.func({"key": 1}))
     print(test.func2())
+
+    print(load_data())
