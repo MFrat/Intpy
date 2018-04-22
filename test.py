@@ -1,6 +1,5 @@
 import time
-from functools import wraps
-from intpy import deterministic
+from src.intpy import deterministic
 
 
 class Test:
@@ -13,6 +12,8 @@ class Test:
     def func2(self):
         return 'func2'
 
+
 if __name__ == "__main__":
     test = Test()
     print(test.func(123))
+    print(test.func2())
