@@ -13,7 +13,7 @@ def _create_cache_folder():
     if _cache_folder_exists():
         return
 
-    debug("cache folder doesn't exists, creating one")
+    debug("creating cache folder")
     os.makedirs(CACHE_FOLDER_NAME)
 
 
@@ -77,4 +77,4 @@ def _cache_folder_exists():
 
 
 def _env_exists():
-    return _db_exists() and _folder_exists()
+    return _folder_exists() and _db_exists() and _cache_folder_exists()

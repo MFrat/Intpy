@@ -15,7 +15,10 @@ def cache_exists(cache):
 
 def cache_data(func, fun_args, fun_return, elapsed_time):
     debug("starting caching data for {0}".format(func.__name__))
+    start = time.clock()
     create_entry(func.__name__, fun_args, fun_return, elapsed_time)
+    end = time.clock()
+    debug("caching {0} took {1}".format(func.__name__, end - start))
 
 
 def execute_func(f, self, *method_args, **method_kwargs):
