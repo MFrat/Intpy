@@ -3,12 +3,12 @@ from src.intpy import deterministic
 
 
 class Test:
-    @deterministic()
+    @deterministic
     def func(self, data):
         time.sleep(2)
         return "func1 {0}".format(data)
 
-    @deterministic()
+    @deterministic
     def func2(self):
         return 'func2'
 

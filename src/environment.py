@@ -5,7 +5,16 @@ import sqlite3
 from src.logger.log import debug
 
 FOLDER_NAME = ".intpy"
+CACHE_FOLDER_NAME = FOLDER_NAME + "/cache"
 HIDDEN = 0x02
+
+
+def _create_cache_folder():
+    if _cache_folder_exists():
+        return
+
+    debug("cache folder doesn't exists, creating one")
+    os.makedirs(CACHE_FOLDER_NAME)
 
 
 def _create_folder():
@@ -16,15 +25,16 @@ def _create_folder():
 
     os.makedirs(FOLDER_NAME)
     ctypes.windll.kernel32.SetFileAttributesW(FOLDER_NAME, HIDDEN)
+    _create_cache_folder()
 
 
 def init_env(f):
-    debug("initalizating intpy environment")
+    debug("cheking if intpy environment exists")
     if _env_exists():
         debug("environment already exists")
         return f
 
-    debug("building environment")
+    debug("creating intpy environment")
     _create_folder()
     _create_database()
 
@@ -60,6 +70,10 @@ def _db_exists():
 
 def _folder_exists():
     return os.path.exists(FOLDER_NAME)
+
+
+def _cache_folder_exists():
+    return os.path.exists(CACHE_FOLDER_NAME)
 
 
 def _env_exists():

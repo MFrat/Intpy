@@ -1,6 +1,8 @@
-import os
+import pickle
 
 from .environment import init_env
+from .logger.log import debug
+
 
 def _create_conn():
     # TODO
@@ -41,7 +43,17 @@ def get_cache_data(fun_name, fun_args):
     return "cache" if fun_name == "func" else None
 
 
-def create_entry(fun_name, fun_args, fun_return):
+def create_entry(fun_name, fun_args, fun_return, elapsed_time):
     id = _get_id(fun_name, fun_args)
-    # FIXME salvar no banco
-    pass
+
+    def serialize(return_value, file_name):
+        with open(".intpy/cache/{0}.{1}".format(file_name, 'ipcache'), 'wb') as file:
+            return pickle.dump(return_value, file, protocol=pickle.HIGHEST_PROTOCOL)
+
+    debug("serializing return value from {0}".format(fun_name))
+    serialize(fun_return, id)
+
+    debug("recording in database")
+
+
+
