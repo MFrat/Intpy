@@ -67,7 +67,7 @@ def _function_call(f):
 
     return wrapper
 
-
+#Gambiarra, talvez mude
 def _is_method(f):
     args = inspect.getfullargspec(f).args
     return bool(args and args[0] == 'self')
