@@ -15,7 +15,7 @@ def _cache_exists(cache):
 
 
 def _cache_data(func, fun_args, fun_return, elapsed_time):
-    debug("starting caching data for {0}".format(func.__name__))
+    debug("starting caching data for {0}({1})".format(func.__name__, *fun_args))
     start = time.clock()
     create_entry(func.__name__, fun_args, fun_return, elapsed_time)
     end = time.clock()
@@ -40,12 +40,12 @@ def _method_call(f):
         debug("calling {0}".format(f.__name__))
         c = _get_cache(f, method_args)
         if not _cache_exists(c):
-            debug("cache miss for {0}".format(f.__name__))
+            debug("cache miss for {0}({1})".format(f.__name__, *method_args))
             return_value, elapsed_time = _execute_func(f, self, *method_args, **method_kwargs)
-            _cache_data(f, method_args, return_value, elapsed_time)
+            _cache_data(f, *method_args, return_value, elapsed_time)
             return return_value
         else:
-            debug("cache hit for {0}".format(f.__name__))
+            debug("cache hit for {0}({1})".format(f.__name__, *method_args))
             return c
 
     return wrapper
@@ -57,17 +57,18 @@ def _function_call(f):
         debug("calling {0}".format(f.__name__))
         c = _get_cache(f, method_args)
         if not _cache_exists(c):
-            debug("cache miss for {0}".format(f.__name__))
+            debug("cache miss for {0}({1})".format(f.__name__, *method_args))
             return_value, elapsed_time = _execute_func(f, *method_args, **method_kwargs)
             _cache_data(f, method_args, return_value, elapsed_time)
             return return_value
         else:
-            debug("cache hit for {0}".format(f.__name__))
+            debug("cache hit for {0}({1})".format(f.__name__, *method_args))
             return c
 
     return wrapper
 
-#Gambiarra, talvez mude
+
+# Gambiarra, talvez mude
 def _is_method(f):
     args = inspect.getfullargspec(f).args
     return bool(args and args[0] == 'self')

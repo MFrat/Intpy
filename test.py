@@ -1,4 +1,5 @@
 import time
+
 from src.intpy import deterministic
 
 
@@ -14,14 +15,23 @@ class Test:
 
 
 @deterministic
-def load_data():
+def func2():
     return "data"
 
 
-if __name__ == "__main__":
-    test = Test()
-    print(test.func({"key": 1}))
-    print(test.func({"key": 1}))
-    print(test.func2())
+@deterministic
+def fib(n):
+    if n <= 1:
+        return n
 
-    print(load_data())
+    return fib(n-1) + fib(n-2)
+
+
+if __name__ == "__main__":
+    # test = Test()
+    # print(test.func(Teste(2)))
+    # print(test.func(1))
+    # print(test.func2())
+    # # print(func2())
+
+    print(fib(10))

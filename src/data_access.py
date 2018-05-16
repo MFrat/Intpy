@@ -1,5 +1,6 @@
 import pickle
 import sqlite3
+import re
 
 from .environment import init_env
 from .logger.log import debug
@@ -36,7 +37,12 @@ def _get(id):
 
 
 def _format_args(args):
-    return str([str(x).replace('"', "").replace("'", "") for x in args])
+    return str([re.sub('[\s\'<>]', '', str(x)) for x in args])
+    # return str([str(x).replace('"', "").
+    #            replace(" ", "").
+    #            replace("'", "").
+    #            replace("<", "").
+    #            replace(">", "") for x in args])
 
 
 def _get_file_name(id):
