@@ -7,7 +7,7 @@ from .logger.log import debug
 
 
 def _get_cache(func, args):
-    return get_cache_data(func.__name__, args)
+    return get_cache_data(func.__name__, args, inspect.getsource(func))
 
 
 def _cache_exists(cache):
@@ -15,9 +15,9 @@ def _cache_exists(cache):
 
 
 def _cache_data(func, fun_args, fun_return, elapsed_time):
-    debug("starting caching data for {0}({1})".format(func.__name__, *fun_args))
+    debug("starting caching data for {0}({1})".format(func.__name__, fun_args))
     start = time.clock()
-    create_entry(func.__name__, fun_args, fun_return, elapsed_time)
+    create_entry(func.__name__, fun_args, fun_return, inspect.getsource(func))
     end = time.clock()
     debug("caching {0} took {1}".format(func.__name__, end - start))
 
@@ -42,7 +42,7 @@ def _method_call(f):
         if not _cache_exists(c):
             debug("cache miss for {0}({1})".format(f.__name__, *method_args))
             return_value, elapsed_time = _execute_func(f, self, *method_args, **method_kwargs)
-            _cache_data(f, *method_args, return_value, elapsed_time)
+            _cache_data(f, method_args, return_value, inspect.getsource(f))
             return return_value
         else:
             debug("cache hit for {0}({1})".format(f.__name__, *method_args))
@@ -59,7 +59,7 @@ def _function_call(f):
         if not _cache_exists(c):
             debug("cache miss for {0}({1})".format(f.__name__, *method_args))
             return_value, elapsed_time = _execute_func(f, *method_args, **method_kwargs)
-            _cache_data(f, method_args, return_value, elapsed_time)
+            _cache_data(f, method_args, return_value, inspect.getsource(f))
             return return_value
         else:
             debug("cache hit for {0}({1})".format(f.__name__, *method_args))

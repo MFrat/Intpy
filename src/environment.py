@@ -11,6 +11,7 @@ HIDDEN = 0x02
 
 def _create_cache_folder():
     if _cache_folder_exists():
+        debug("cache folder already exists")
         return
 
     debug("creating cache folder")
@@ -18,14 +19,14 @@ def _create_cache_folder():
 
 
 def _create_folder():
-    debug("creating folder")
+    debug("creating .intpy folder")
     if _folder_exists():
-        debug("folder already exists")
+        debug(".intpy folder already exists")
         return
 
     os.makedirs(FOLDER_NAME)
     ctypes.windll.kernel32.SetFileAttributesW(FOLDER_NAME, HIDDEN)
-    _create_cache_folder()
+    # _create_cache_folder()
 
 
 def init_env(f):
@@ -36,6 +37,7 @@ def init_env(f):
 
     debug("creating intpy environment")
     _create_folder()
+    _create_cache_folder()
     _create_database()
 
     return f

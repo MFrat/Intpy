@@ -1,9 +1,10 @@
 import pickle
 import sqlite3
 import re
+import hashlib
 
 from .environment import init_env
-from .logger.log import debug
+from .logger.log import debug, error, warn
 
 
 def _create_conn():
@@ -28,45 +29,52 @@ def _exec_stmt_return(stmt):
 
 
 def _save(file_name):
-    _exec_stmt("INSERT INTO CACHE(cache_file) VALUES ('{0}')".format(file_name.replace("'", "").replace('"', "")))
+    _exec_stmt("INSERT INTO CACHE(cache_file) VALUES ('{0}')".format(file_name))
 
 
 def _get(id):
-    return _exec_stmt_return("SELECT cache_file FROM CACHE WHERE cache_file = '{0}'".format(id.replace("'", "").
-                                                                                            replace('"', "")))
+    return _exec_stmt_return("SELECT cache_file FROM CACHE WHERE cache_file = '{0}'".format(id))
 
 
-def _format_args(args):
-    return str([re.sub('[\s\'<>]', '', str(x)) for x in args])
-    # return str([str(x).replace('"', "").
-    #            replace(" ", "").
-    #            replace("'", "").
-    #            replace("<", "").
-    #            replace(">", "") for x in args])
+def _remove(id):
+    _exec_stmt("DELETE FROM CACHE WHERE cache_file = '{0}';".format(id))
 
 
 def _get_file_name(id):
     return "{0}.{1}".format(id, "ipcache")
 
 
-def _get_id(fun_name, fun_args):
-    return fun_name + _format_args(fun_args)
+def _get_id(fun_name, fun_args, fun_source):
+    return hashlib.md5((fun_name + str(fun_args) + fun_source).encode('utf')).hexdigest()
 
 
 @init_env
-def get_cache_data(fun_name, fun_args):
-    id = _get_id(fun_name, fun_args)
+def get_cache_data(fun_name, fun_args, fun_source):
+    id = _get_id(fun_name, fun_args, fun_source)
     file_name = _get(_get_file_name(id))
 
     def deserialize(id):
-        with open(".intpy/cache/{0}".format(_get_file_name(id)), 'rb') as file:
-            return pickle.load(file)
+        try:
+            with open(".intpy/cache/{0}".format(_get_file_name(id)), 'rb') as file:
+                return pickle.load(file)
+        except FileNotFoundError as e:
+            warn("corrupt environment. Cache reference exists for {0} in database but there is no file for it in cache folder.\
+ Have you deleted cache folder?".format(fun_name))
+            autofix(id)
+            return None
 
     return deserialize(id) if file_name is not None else None
 
 
-def create_entry(fun_name, fun_args, fun_return, elapsed_time):
-    id = _get_id(fun_name, fun_args)
+def autofix(id):
+    debug("starting autofix")
+    debug("removing {0} from database".format(id))
+    _remove(_get_file_name(id))
+    debug("environment fixed")
+
+
+def create_entry(fun_name, fun_args, fun_return, fun_source):
+    id = _get_id(fun_name, fun_args, fun_source)
 
     def serialize(return_value, file_name):
         with open(".intpy/cache/{0}".format(_get_file_name(file_name)), 'wb') as file:
