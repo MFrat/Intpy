@@ -26,7 +26,6 @@ def _create_folder():
 
     os.makedirs(FOLDER_NAME)
     ctypes.windll.kernel32.SetFileAttributesW(FOLDER_NAME, HIDDEN)
-    # _create_cache_folder()
 
 
 def init_env(f):
