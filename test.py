@@ -16,11 +16,6 @@ class Test:
 
 
 @deterministic
-def func2():
-    return "data"
-
-
-@deterministic
 def fib(n):
     if n < 2:
         return n
@@ -50,8 +45,9 @@ def pow(n, x):
 
 
 if __name__ == "__main__":
-    test = Test()
-    print(test.func(1))
+    print(fun(10))
+    # test = Test()
+    # print(test.func(1))
     # print(test.func2())
     # # print(func2())
 
