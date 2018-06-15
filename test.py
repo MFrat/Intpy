@@ -45,7 +45,7 @@ def pow(n, x):
 
 
 if __name__ == "__main__":
-    print(fun(10))
+    print(fib(100))
     # test = Test()
     # print(test.func(1))
     # print(test.func2())
